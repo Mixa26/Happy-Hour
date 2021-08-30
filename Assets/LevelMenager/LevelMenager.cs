@@ -98,7 +98,7 @@ public class LevelMenager : MonoBehaviour
         }
     }
 
-    void KillPlayer()
+    private void KillPlayer()
     {
         playerPosition.position = playerStartLevelPosition;     
         if (playerLives <= 0)
@@ -106,4 +106,5 @@ public class LevelMenager : MonoBehaviour
             playerLives = 3;
         }
     }
+
 }
