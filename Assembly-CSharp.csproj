@@ -58,6 +58,7 @@
     <Compile Include="Assets\Camera\Scripts\CameraMovementScript.cs" />
     <Compile Include="Assets\Prefabs\Crab\Scripts\Crab.cs" />
     <Compile Include="Assets\GameMenager\GameMenager.cs" />
+    <Compile Include="Assets\Prefabs\Hammer\Scripts\HammerScript.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

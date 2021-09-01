@@ -7,7 +7,8 @@ public class LevelMenager : MonoBehaviour
 
     public Vector3 playerStartLevelPosition;
 
-    private int playerLives;
+    public int playerLives;
+    public int hammers;
     [HideInInspector]
     public bool collisionDelay;
 
@@ -16,11 +17,13 @@ public class LevelMenager : MonoBehaviour
     private GameObject life1;
     private GameObject life2;
     private GameObject life3;
+    private GameObject Hammers;
+    [HideInInspector]
+    public GameObject numberOfHammers;
     PlayerMovement playerMovement;
 
-    private void Start()
-    {
-        playerLives = 3;
+    private void Awake()
+    {     
         collisionDelay = false;
         //player
         player = GameObject.Find("Player");
@@ -28,6 +31,10 @@ public class LevelMenager : MonoBehaviour
         life2 = GameObject.Find("life2");
         life3 = GameObject.Find("life3");
         playerMovement = player.GetComponent<PlayerMovement>();
+        Hammers = GameObject.Find("Hammers");
+        numberOfHammers = GameObject.Find("numberOfHammers");
+        Hammers.SetActive(false);
+        numberOfHammers.SetActive(false);
     }
 
     void CollisionDelay()
@@ -95,6 +102,18 @@ public class LevelMenager : MonoBehaviour
         if (playerMovement.endLevel)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+
+        if (hammers > 0 && !Hammers.activeInHierarchy)
+        {
+            Hammers.SetActive(true);
+            numberOfHammers.SetActive(true);
+        }
+        
+        if (hammers <= 0)
+        {
+            Hammers.SetActive(false);
+            numberOfHammers.SetActive(false);
         }
     }
 

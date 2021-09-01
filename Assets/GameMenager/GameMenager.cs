@@ -6,15 +6,23 @@ public class GameMenager : MonoBehaviour
 {
     [SerializeField] Slider volumeSlider;
     private int continueGameSceneIndex;
+    private PlayerMovement playerScript;
+    private LevelMenager levelMenager;
 
     //canvas
     GameObject Menu;
     GameObject AudioMenu;
 
-    private void Start()
+    private void Awake()
     {
         Menu = GameObject.Find("Menu");
         AudioMenu = GameObject.Find("AudioMenu");
+        playerScript = GameObject.Find("Player").GetComponent<PlayerMovement>();
+        if (SceneManager.GetActiveScene().buildIndex != 0)
+        {
+            levelMenager = GameObject.Find("LevelMenager").GetComponent<LevelMenager>();
+        }
+
 
         if (SceneManager.GetActiveScene().buildIndex.Equals(0))
         {
@@ -22,7 +30,7 @@ public class GameMenager : MonoBehaviour
         }
         else
         {
-           Menu.SetActive(false);
+            Menu.SetActive(false);
         }
         AudioMenu.SetActive(false);
 
@@ -35,7 +43,7 @@ public class GameMenager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && SceneManager.GetActiveScene().buildIndex != 0)
         {
             if (!Menu.activeInHierarchy && !AudioMenu.activeInHierarchy)
             {
@@ -62,6 +70,7 @@ public class GameMenager : MonoBehaviour
     public void ContinueGame()
     {
         SceneManager.LoadScene(continueGameSceneIndex);
+        Load();
     }
     //audio button in menu
     public void switchBetweenMenus()
@@ -81,13 +90,17 @@ public class GameMenager : MonoBehaviour
     public void quitToMainMenu()
     {
         Save();
+        Time.timeScale = 1f;
         SceneManager.LoadScene(0);
         Menu.SetActive(true);
     }
 
     public void Exit()
     {
-        Save();
+        if (SceneManager.GetActiveScene().buildIndex != 0)
+        {
+            Save();
+        }        
         Application.Quit();
     }
 
@@ -98,17 +111,58 @@ public class GameMenager : MonoBehaviour
     }
 
     private void Load()
-    {
+    {        
+        if (PlayerPrefs.HasKey("playerLives") && SceneManager.GetActiveScene().buildIndex != 0)
+        {
+            float x, y, z;
+            levelMenager.playerLives = PlayerPrefs.GetInt("playerLives");
+            x = PlayerPrefs.GetFloat("playerPosX");
+            y = PlayerPrefs.GetFloat("playerPosY");
+            z = 0;
+            Vector3 playerPosition = new Vector3(x, y, z);
+            playerScript.gameObject.transform.position = playerPosition;
+        }
+        else if (!PlayerPrefs.HasKey("playerLives") && SceneManager.GetActiveScene().buildIndex != 0)
+        {
+            levelMenager.playerLives = 3;
+        }
+
+        if (PlayerPrefs.HasKey("hammers") && SceneManager.GetActiveScene().buildIndex != 0)
+        {
+            levelMenager.hammers = PlayerPrefs.GetInt("hammers");
+        }
+        else
+        {
+            levelMenager.hammers = 0;
+        }
+
+        if (PlayerPrefs.HasKey("continueGameSceneIndex"))
+        {
+            continueGameSceneIndex = PlayerPrefs.GetInt("continueGameSceneIndex");
+        }
+        else
+        {
+            continueGameSceneIndex = 1;
+        }
+
         if (volumeSlider != null)
         {
             volumeSlider.value = PlayerPrefs.GetFloat("musicVolume");
-        }      
-        //TODO izmeni ovo
-        continueGameSceneIndex = 1;
+        }
+ 
     }
 
     private void Save()
     {
+        if (SceneManager.GetActiveScene().buildIndex != 0)
+        {
+            PlayerPrefs.SetInt("playerLives", levelMenager.playerLives);
+            PlayerPrefs.SetInt("hammers", levelMenager.hammers);
+            PlayerPrefs.SetFloat("playerPosX", playerScript.gameObject.transform.position.x);
+            PlayerPrefs.SetFloat("playerPosY", playerScript.gameObject.transform.position.y);
+            PlayerPrefs.SetFloat("playerPosZ", playerScript.gameObject.transform.position.x);
+            PlayerPrefs.SetInt("continueGameSceneIndex", SceneManager.GetActiveScene().buildIndex);
+        }
         PlayerPrefs.SetFloat("musicVolume", volumeSlider.value);
     }
 }
