@@ -8,6 +8,11 @@ TagManager:
   - JumpWall
   - Enemy
   - Food
+  - Hammer
+  - Ladder
+  - Box
+  - BoxFractured
+  - SavePoint
   layers:
   - Default
   - TransparentFX

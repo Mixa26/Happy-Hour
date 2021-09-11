@@ -53,12 +53,16 @@
     <UnityVersion>2020.3.13f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Assets\Prefabs\Spikes\Scripts\SpikesScript.cs" />
     <Compile Include="Assets\LevelMenager\LevelMenager.cs" />
     <Compile Include="Assets\Prefabs\Player\Scripts\PlayerMovement.cs" />
+    <Compile Include="Assets\Prefabs\Hammer\Scripts\HammerScript.cs" />
+    <Compile Include="Assets\Prefabs\HammerStash\Scripts\HammerStashScript.cs" />
     <Compile Include="Assets\Camera\Scripts\CameraMovementScript.cs" />
     <Compile Include="Assets\Prefabs\Crab\Scripts\Crab.cs" />
     <Compile Include="Assets\GameMenager\GameMenager.cs" />
-    <Compile Include="Assets\Prefabs\Hammer\Scripts\HammerScript.cs" />
+    <Compile Include="Assets\Prefabs\Box\Script\BoxScript.cs" />
+    <Compile Include="Assets\Prefabs\Floor\Scripts\CobbleScript.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

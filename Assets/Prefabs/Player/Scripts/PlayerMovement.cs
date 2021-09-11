@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -14,6 +15,10 @@ public class PlayerMovement : MonoBehaviour
     private bool collidingWithJumpWall;
     private bool jumpOnceJumpWall;
 
+    public GameObject hammerPrefab;
+
+    private bool ladder;
+
     //used for checking if player is on ground with ray casts
     private float distanceToGround;
 
@@ -25,6 +30,8 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector]
     public bool endLevel;
 
+    public int facing;
+
     [Header("Audio")]
     //Audio
     public AudioSource jumpAudio;
@@ -34,10 +41,12 @@ public class PlayerMovement : MonoBehaviour
     public AudioSource oohAudio;
     public AudioClip oohAudioClip;
     public AudioSource eatAudio;
-    public AudioClip eatAudioClip;
+    public AudioClip eatAudioClip;   
 
     //Animator
     private Animator animator;
+
+    private LevelMenager levelMenager;
 
     private void Awake()
     {
@@ -63,6 +72,14 @@ public class PlayerMovement : MonoBehaviour
 
         //Animator
         animator = GetComponent<Animator>();
+
+        levelMenager = GameObject.Find("LevelMenager").GetComponent<LevelMenager>();
+        ladder = false;
+    }
+
+    private void Start()
+    {
+        facing = 1;
     }
 
     // Update is called once per frame
@@ -82,8 +99,21 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
+        if (levelMenager.hammers > 0 && Input.GetKeyDown(KeyCode.Space))
+        {
+            Vector3 inFrontOfPlayer = gameObject.transform.position;
+            inFrontOfPlayer.y -= 1f;
+            inFrontOfPlayer.x += 1.5f * facing;
+            Quaternion rotation = new Quaternion(0, 90, 0, 0);
+            GameObject hammerClone = Instantiate(hammerPrefab, inFrontOfPlayer, rotation);
+
+            levelMenager.hammers--;
+            levelMenager.numberOfHammers.GetComponent<Text>().text = levelMenager.hammers.ToString();
+            hammerClone.GetComponent<HammerScript>().throwHammer(facing);
+        }
+
         //movement
-        if (IsGrounded && Input.GetKeyDown(KeyCode.UpArrow))
+        if (IsGrounded && !ladder && Input.GetKeyDown(KeyCode.UpArrow))
         {
             if (collidingWithJumpWall)
             {
@@ -99,8 +129,22 @@ public class PlayerMovement : MonoBehaviour
             jumpAudio.Play();
         }
 
+        if (ladder && Input.GetKey(KeyCode.UpArrow))
+        {
+            Vector3 playerPosition = transform.position;
+            playerPosition.y += 5.0f * Time.deltaTime;
+            transform.position = playerPosition;     
+        }
+        else if (ladder && Input.GetKey(KeyCode.DownArrow))
+        {
+            Vector3 playerPosition = transform.position;
+            playerPosition.y -= 5.0f * Time.deltaTime;
+            transform.position = playerPosition;
+        }
+
         if (Input.GetKey(KeyCode.LeftArrow))
         {
+            facing = -1;
             //movement update
             Vector3 playerPosition = transform.position;
             playerPosition.x -= 5.0f * Time.deltaTime;
@@ -124,6 +168,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (Input.GetKey(KeyCode.RightArrow))
         {
+            facing = 1;
             //movement update
             Vector3 playerPosition = transform.position;
             playerPosition.x += 5.0f * Time.deltaTime;
@@ -208,6 +253,44 @@ public class PlayerMovement : MonoBehaviour
         if (other.gameObject.name.Equals("OpenDoor"))
         {
             GameObject.Find("DoorV2").GetComponent<Animator>().SetBool("OpenDoor", true);
+        }
+
+        if (other.gameObject.name.Equals("ThrowHammer") && levelMenager.hammers > 0)
+        {
+            Vector3 inFrontOfPlayer = gameObject.transform.position;
+            inFrontOfPlayer.y -= 1f;
+            inFrontOfPlayer.x += 1.5f * facing;
+            Quaternion rotation = new Quaternion(0, 90, 0, 0);
+            GameObject hammerClone = Instantiate(hammerPrefab, inFrontOfPlayer, rotation);
+
+            levelMenager.hammers--;
+            levelMenager.numberOfHammers.GetComponent<Text>().text = levelMenager.hammers.ToString();
+            hammerClone.GetComponent<HammerScript>().throwHammer(facing);
+        }
+
+        if (other.CompareTag("Ladder"))
+        {
+            ladder = true;
+            rb.useGravity = false;
+        }
+
+        if (other.CompareTag("Enemy"))
+        {
+            enemyHit = true;
+        }
+
+        if (other.CompareTag("SavePoint"))
+        {
+            levelMenager.playerStartLevelPosition = transform.position;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Ladder"))
+        {
+            ladder = false;
+            rb.useGravity = true;
         }
     }
 

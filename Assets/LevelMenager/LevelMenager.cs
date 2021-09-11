@@ -22,6 +22,8 @@ public class LevelMenager : MonoBehaviour
     public GameObject numberOfHammers;
     PlayerMovement playerMovement;
 
+    private int activeScene;
+
     private void Awake()
     {     
         collisionDelay = false;
@@ -31,10 +33,16 @@ public class LevelMenager : MonoBehaviour
         life2 = GameObject.Find("life2");
         life3 = GameObject.Find("life3");
         playerMovement = player.GetComponent<PlayerMovement>();
-        Hammers = GameObject.Find("Hammers");
-        numberOfHammers = GameObject.Find("numberOfHammers");
-        Hammers.SetActive(false);
-        numberOfHammers.SetActive(false);
+        if (activeScene != 1)
+        {
+            Hammers = GameObject.Find("Hammers");
+            numberOfHammers = GameObject.Find("numberOfHammers");
+            Hammers.SetActive(false);
+            numberOfHammers.SetActive(false);
+        }
+
+        activeScene = SceneManager.GetActiveScene().buildIndex;
+
     }
 
     void CollisionDelay()
@@ -102,28 +110,29 @@ public class LevelMenager : MonoBehaviour
         if (playerMovement.endLevel)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            playerMovement.endLevel = false;
         }
 
-        if (hammers > 0 && !Hammers.activeInHierarchy)
+        if (activeScene != 1)
         {
-            Hammers.SetActive(true);
-            numberOfHammers.SetActive(true);
-        }
-        
-        if (hammers <= 0)
-        {
-            Hammers.SetActive(false);
-            numberOfHammers.SetActive(false);
+            if (hammers > 0 && !Hammers.activeInHierarchy)
+            {
+                Hammers.SetActive(true);
+                numberOfHammers.SetActive(true);
+            }
+
+            if (hammers <= 0)
+            {
+                Hammers.SetActive(false);
+                numberOfHammers.SetActive(false);
+            }
         }
     }
 
     private void KillPlayer()
     {
         playerPosition.position = playerStartLevelPosition;     
-        if (playerLives <= 0)
-        {
-            playerLives = 3;
-        }
+        playerLives = 3;
     }
 
 }

@@ -13,6 +13,11 @@ public class Crab : MonoBehaviour
     private float crabSpeed = 2.5f;
     private float crabSizeX;
 
+    private AudioSource bonkAudio;
+    public AudioClip bonkAudioClip;
+
+    private int bonkOnce;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -23,6 +28,10 @@ public class Crab : MonoBehaviour
         crabSizeX = GetComponent<Collider>().bounds.extents.x;
 
         GetComponent<Animator>().SetBool("IsWalking", true);
+
+        bonkAudio = gameObject.AddComponent<AudioSource>();
+        bonkAudio.clip = bonkAudioClip;
+        bonkOnce = 0;
     }
 
     // Update is called once per frame
@@ -41,6 +50,23 @@ public class Crab : MonoBehaviour
         {
             //movement left
             facing = 1;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Hammer"))
+        {
+            GetComponent<Animator>().SetBool("isDie", true);
+            GetComponent<MeshCollider>().enabled = false;
+            Destroy(gameObject, 1f);
+            other.GetComponent<HammerScript>().hit = true;
+            this.crabSpeed = 0;
+            if (bonkOnce == 0)
+            {
+                bonkAudio.Play();
+                bonkOnce = 1;
+            }
         }
     }
 }

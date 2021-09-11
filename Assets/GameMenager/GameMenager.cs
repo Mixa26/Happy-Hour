@@ -39,6 +39,10 @@ public class GameMenager : MonoBehaviour
             PlayerPrefs.SetFloat("musicVolume", 1);
         }
         Load();
+        if (SceneManager.GetActiveScene().buildIndex > 0)
+        {
+            playerScript.transform.position = levelMenager.playerStartLevelPosition;
+        }
     }
 
     private void Update()
@@ -58,6 +62,8 @@ public class GameMenager : MonoBehaviour
                 Time.timeScale = 1f;
             }
         }
+
+        
     }
     public void Resume()
     {
@@ -71,6 +77,12 @@ public class GameMenager : MonoBehaviour
     {
         SceneManager.LoadScene(continueGameSceneIndex);
         Load();
+    }
+
+    public void StartNewGame()
+    {
+        SceneManager.LoadScene(1);
+        PlayerPrefs.DeleteAll();
     }
     //audio button in menu
     public void switchBetweenMenus()
@@ -104,6 +116,11 @@ public class GameMenager : MonoBehaviour
         Application.Quit();
     }
 
+    private void OnApplicationQuit()
+    {
+        Save();
+    }
+
     public void ChangeVolume()
     {
         AudioListener.volume = volumeSlider.value;
@@ -127,11 +144,12 @@ public class GameMenager : MonoBehaviour
             levelMenager.playerLives = 3;
         }
 
-        if (PlayerPrefs.HasKey("hammers") && SceneManager.GetActiveScene().buildIndex != 0)
+        if (PlayerPrefs.HasKey("hammers") && SceneManager.GetActiveScene().buildIndex > 1)
         {
             levelMenager.hammers = PlayerPrefs.GetInt("hammers");
+            levelMenager.numberOfHammers.GetComponent<Text>().text = PlayerPrefs.GetInt("hammers").ToString();
         }
-        else
+        else if (SceneManager.GetActiveScene().buildIndex != 0)
         {
             levelMenager.hammers = 0;
         }
@@ -149,7 +167,7 @@ public class GameMenager : MonoBehaviour
         {
             volumeSlider.value = PlayerPrefs.GetFloat("musicVolume");
         }
- 
+
     }
 
     private void Save()
