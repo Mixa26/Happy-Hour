@@ -57,12 +57,14 @@
     <Compile Include="Assets\LevelMenager\LevelMenager.cs" />
     <Compile Include="Assets\Prefabs\Player\Scripts\PlayerMovement.cs" />
     <Compile Include="Assets\Prefabs\Hammer\Scripts\HammerScript.cs" />
+    <Compile Include="Assets\Prefabs\Floor\Scripts\CobbleScript.cs" />
     <Compile Include="Assets\Prefabs\HammerStash\Scripts\HammerStashScript.cs" />
     <Compile Include="Assets\Camera\Scripts\CameraMovementScript.cs" />
     <Compile Include="Assets\Prefabs\Crab\Scripts\Crab.cs" />
     <Compile Include="Assets\GameMenager\GameMenager.cs" />
     <Compile Include="Assets\Prefabs\Box\Script\BoxScript.cs" />
-    <Compile Include="Assets\Prefabs\Floor\Scripts\CobbleScript.cs" />
+    <Compile Include="Assets\Prefabs\Fences\LowPolyFencePack\Scripts\DoorController.cs" />
+    <Compile Include="Assets\Prefabs\Fences\LowPolyFencePack\Scripts\DoorToggle.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -79,9 +81,11 @@
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
-    <None Include="Assets\Cloudy Summer Day Skybox\CloudySummerDaySkybox_Info.txt" />
+    <None Include="Assets\Prefabs\Trees\LowPolyTreePack\README.txt" />
+    <None Include="Assets\Skyboxes\Cloudy Summer Day Skybox\CloudySummerDaySkybox_Info.txt" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
+    <None Include="Assets\Skyboxes\SkySerie Freebie\Hdri setup.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />

@@ -7251,6 +7251,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsGrounded: 1
   hammerPrefab: {fileID: 9076980032473434523, guid: 71ccf927cb4d5654a86cc62eb312746f, type: 3}
+  resetPlayerPosToLevelBeggining: 0
   enemyHit: 0
   foodAte: 0
   endLevel: 0

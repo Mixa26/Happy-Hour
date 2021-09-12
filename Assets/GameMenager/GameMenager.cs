@@ -6,18 +6,20 @@ public class GameMenager : MonoBehaviour
 {
     [SerializeField] Slider volumeSlider;
     private int continueGameSceneIndex;
-    private PlayerMovement playerScript;
+    private PlayerMovement playerMovement;
     private LevelMenager levelMenager;
 
     //canvas
     GameObject Menu;
     GameObject AudioMenu;
 
+    private int activeSceneIndex;
+
     private void Awake()
     {
         Menu = GameObject.Find("Menu");
         AudioMenu = GameObject.Find("AudioMenu");
-        playerScript = GameObject.Find("Player").GetComponent<PlayerMovement>();
+        playerMovement = GameObject.Find("Player").GetComponent<PlayerMovement>();
         if (SceneManager.GetActiveScene().buildIndex != 0)
         {
             levelMenager = GameObject.Find("LevelMenager").GetComponent<LevelMenager>();
@@ -39,10 +41,7 @@ public class GameMenager : MonoBehaviour
             PlayerPrefs.SetFloat("musicVolume", 1);
         }
         Load();
-        if (SceneManager.GetActiveScene().buildIndex > 0)
-        {
-            playerScript.transform.position = levelMenager.playerStartLevelPosition;
-        }
+        activeSceneIndex = SceneManager.GetActiveScene().buildIndex;
     }
 
     private void Update()
@@ -76,7 +75,6 @@ public class GameMenager : MonoBehaviour
     public void ContinueGame()
     {
         SceneManager.LoadScene(continueGameSceneIndex);
-        Load();
     }
 
     public void StartNewGame()
@@ -131,13 +129,22 @@ public class GameMenager : MonoBehaviour
     {        
         if (PlayerPrefs.HasKey("playerLives") && SceneManager.GetActiveScene().buildIndex != 0)
         {
-            float x, y, z;
+            if (PlayerPrefs.HasKey("loadStartLevelLocation") && !(PlayerPrefs.GetInt("loadStartLevelLocation") == 1))
+            {
+                float x, y, z;             
+                x = PlayerPrefs.GetFloat("playerPosX");
+                y = PlayerPrefs.GetFloat("playerPosY");
+                z = 0;
+                Vector3 playerPosition = new Vector3(x, y, z);
+                playerMovement.gameObject.transform.position = playerPosition;             
+            }
+            else
+            {
+                playerMovement.gameObject.transform.position = levelMenager.playerStartLevelPosition;
+                
+            }
             levelMenager.playerLives = PlayerPrefs.GetInt("playerLives");
-            x = PlayerPrefs.GetFloat("playerPosX");
-            y = PlayerPrefs.GetFloat("playerPosY");
-            z = 0;
-            Vector3 playerPosition = new Vector3(x, y, z);
-            playerScript.gameObject.transform.position = playerPosition;
+            PlayerPrefs.SetInt("loadStartLevelLocation", 0);
         }
         else if (!PlayerPrefs.HasKey("playerLives") && SceneManager.GetActiveScene().buildIndex != 0)
         {
@@ -176,9 +183,9 @@ public class GameMenager : MonoBehaviour
         {
             PlayerPrefs.SetInt("playerLives", levelMenager.playerLives);
             PlayerPrefs.SetInt("hammers", levelMenager.hammers);
-            PlayerPrefs.SetFloat("playerPosX", playerScript.gameObject.transform.position.x);
-            PlayerPrefs.SetFloat("playerPosY", playerScript.gameObject.transform.position.y);
-            PlayerPrefs.SetFloat("playerPosZ", playerScript.gameObject.transform.position.x);
+            PlayerPrefs.SetFloat("playerPosX", playerMovement.gameObject.transform.position.x);
+            PlayerPrefs.SetFloat("playerPosY", playerMovement.gameObject.transform.position.y);
+            PlayerPrefs.SetFloat("playerPosZ", playerMovement.gameObject.transform.position.x);
             PlayerPrefs.SetInt("continueGameSceneIndex", SceneManager.GetActiveScene().buildIndex);
         }
         PlayerPrefs.SetFloat("musicVolume", volumeSlider.value);
