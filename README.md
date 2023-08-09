@@ -1,5 +1,5 @@
 # Happy Hour
- First solo platfrormer Unity game.
+ First solo platformer Unity game.
  
 ![Gameplay1](pictures/1.jpg)
 
